@@ -22,7 +22,6 @@ cc.Class({
       this.accTop = true;
     },
 
-
     setInputControl: function () {
         if (!this.game.isGameOver) {
           var self = this;
@@ -37,9 +36,11 @@ cc.Class({
           // When there is a key being pressed down, judge if it's the designated
           // directional button and set up acceleration in the corresponding direction
           cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, function (event) {
+
               switch (event.keyCode) {
                   case cc.KEY.w:
                       // self.accTop = true;
+                      self.sendDataJump();
                       self.jump();
                       if (!jumpAnimState1.isPlaying) {
                         if (anim1._clips != null) {
@@ -99,7 +100,6 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
     onLoad: function () {
-      console.log('Player onLoad');
       this.isDead = false;
       this.isFalling = false;
       this.isGrowing = false;
@@ -132,7 +132,7 @@ cc.Class({
 
     onCollisionEnter: function (other, self) {
       // console.log('on collision enter: ' + other.node.group);
-      
+
       if (other.tag == 0) {
         // console.log("You lose");
         this.game.GameOver();
@@ -145,13 +145,12 @@ cc.Class({
 
     start: function() {
 
-
     },
 
     update: function (dt) {
         // update speed of each frame according to the current acceleration direction
         // console.log("Player: " + this.accTop);
-        if (!this.game.isGameOver) {
+        if (!this.game.isGameOver && this.game.isGameStarted) {
           if (this.accTop && !this.isFalling && this.isGrowing) {
             this.ySpeed += this.accel * dt;
 

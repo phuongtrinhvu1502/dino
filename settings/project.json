@@ -14,16 +14,24 @@
       false,
       true,
       true,
-      true
-    ],
-    [
-      false,
       true,
       true
     ],
     [
       false,
       true,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
       false,
       true
     ]
@@ -37,7 +45,8 @@
     "default",
     "Enemy",
     "Player",
-    "Bot"
+    "Bot",
+    "Network Player"
   ],
   "simulator-orientation": false,
   "simulator-resolution": {

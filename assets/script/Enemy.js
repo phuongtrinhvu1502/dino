@@ -29,7 +29,6 @@ cc.Class({
         // },
         runSpeed: 0,
         action: 'jump',
-        actionDistance: 100,
     },
 
     onCollisionEnter: function (other, self) {
@@ -39,38 +38,39 @@ cc.Class({
       // }
     },
 
-    getPlayerDistance: function () {
-        // judge the distance according to the position of the player node
-        var playerPos = this.player.getPosition();
-        // calculate the distance between two nodes according to their positions
-        var dist = cc.pDistance(this.node.position, playerPos);
-        return dist;
-    },
-
     playerAction: function(playerComp) {
       if (this.action == 'jump') {
         playerComp.accTop = true;
 
       } else if (this.action == 'duck') {
-        console.log("Duck");
         if (!playerComp.duckAnimState.isPlaying) {
           if (playerComp.anim._clips != null) {
             playerComp.anim.play("dino_duck");
-            if (!playerComp.standCollider.enabled) {
+            if (!playerComp.duckCollider.enabled) {
               playerComp.duckCollider.enabled = true;
               playerComp.standCollider.enabled = false;
             }
           }
         }
+        setTimeout(function () {
+          if (!playerComp.runAnimState.isPlaying) {
+            if (playerComp.anim._clips != null) {
+              playerComp.anim.play("dino");
+              if (!playerComp.standCollider.enabled) {
+                playerComp.duckCollider.enabled = false;
+                playerComp.standCollider.enabled = true;
+              }
+            }
+          }
+        }, 500);
       }
     },
     onCollisionEnter: function (other, self) {
       // console.log('on collision enter: ' + other.node.group);
-      console.log("Player enter");
       // if (other.tag == 0) {
-      if (other.node.group == 'Player') {
-        // console.log("You lose");
-        var comp = other.node.getComponent('Player');
+      if (other.node.group == 'Bot') {
+        // console.log("Bot action");
+        var comp = other.node.getComponent('Bot');
         this.playerAction(comp);
       }
     },
@@ -85,16 +85,17 @@ cc.Class({
 
     start: function () {
       // console.log(this.player);
-      this.playerComp = this.player.getComponent('Player');
       var box = this.node.addComponent(cc.BoxCollider);
       box.offset.x = -75;
-      box.offset.y = -0;
+      box.offset.y = 0;
       box.size.width = 45;
       box.size.height = 45;
       box.tag = 1;
-
+      // console.log(this.node.name);
+      // if (this.node.name == 'Enemy7') {
+      //   console.log(box);
+      // }
       // console.log(box);
-      console.log(this.getComponent(cc.BoxCollider));
     },
 
     update: function (dt) {
@@ -104,10 +105,6 @@ cc.Class({
           this.node.x -= this.runSpeed;
           if (this.node.x <= -1500) {
             this.node.destroy();
-          }
-          if (this.getPlayerDistance() < this.actionDistance) {
-            // console.log("Player action: " + this.action);
-            // this.playerAction();
           }
         }
     },

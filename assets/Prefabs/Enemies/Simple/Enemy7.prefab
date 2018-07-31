@@ -65,7 +65,7 @@
     "_localZOrder": 0,
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
-    "groupIndex": 0
+    "groupIndex": 1
   },
   {
     "__type__": "cc.Node",
@@ -114,7 +114,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -67,
+      "x": 23,
       "y": 0
     },
     "_skewX": 0,
@@ -255,7 +255,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -52,
+      "x": 38,
       "y": 0
     },
     "_skewX": 0,
@@ -357,7 +357,8 @@
       "__id__": 1
     },
     "_enabled": true,
-    "runSpeed": 7
+    "runSpeed": 7,
+    "action": "jump"
   },
   {
     "__type__": "cc.PrefabInfo",

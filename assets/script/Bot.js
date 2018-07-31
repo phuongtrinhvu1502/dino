@@ -19,38 +19,6 @@ cc.Class({
       moveSpeed: 7,
     },
 
-    jump: function() {
-      this.accTop = true;
-    },
-
-    cancleJump: function() {
-      this.accTop = false;
-    },
-
-    duck: function() {
-      if (!this.duckAnimState.isPlaying) {
-        if (this.anim._clips != null) {
-          this.anim.play("dino_duck");
-          if (!this.duckCollider.enabled) {
-            this.duckCollider.enabled = true;
-            this.standCollider.enabled = false;
-          }
-        }
-      }
-    },
-
-    stand: function() {
-      if (!this.runAnimState.isPlaying) {
-        if (this.anim._clips != null) {
-          this.anim.play("dino");
-          if (!this.standCollider.enabled) {
-            this.duckCollider.enabled = false;
-            this.standCollider.enabled = true;
-          }
-        }
-      }
-    },
-
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
@@ -83,15 +51,29 @@ cc.Class({
       manager.enabledDebugDraw = false;
     },
 
-    // start: function () {
-    //
-    // },
+    onCollisionEnter: function (other, self) {
+      // console.log('on collision enter: ' + other.node.group);
+
+      if (other.tag == 0 && other.node.group == 'Enemy') {
+        // console.log("You lose");
+        this.moveSpeed = other.getComponent('Enemy').runSpeed;
+        if (!this.deadAnimState.isPlaying) {
+          this.isDead = true;
+          this.anim.play('dino_dead');
+          this.isBotDead = true;
+        }
+      }
+    },
+
+    start: function () {
+    },
 
     update: function (dt) {
-        if (this.game.isGameOver && this.isDead) {
-          return;
-        }
-        if (this.isDead) {
+
+      if (this.game.isGameOver && this.isBotDead) {
+        return;
+      }
+        if (this.isBotDead) {
           this.node.x -= this.moveSpeed;
           if (this.node.x <= -1500) {
             this.node.destroy();
@@ -100,6 +82,7 @@ cc.Class({
         }
         if (this.accTop && !this.isFalling && this.isGrowing) {
           this.ySpeed += this.accel * dt;
+
         }
         else {
           this.ySpeed -= (this.accel *50/100) *dt;
@@ -118,7 +101,7 @@ cc.Class({
           }
         }
         if (this.node.y >= this.fallingPoint) {
-          // this.accTop = false;
+          this.accTop = false;
           this.isFalling = true;
         }
         if (this.game.isGameOver || !this.game.isGameStarted) {

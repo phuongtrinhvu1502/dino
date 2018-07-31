@@ -120,7 +120,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 22.3,
+      "x": 29,
       "y": 0
     },
     "_skewX": 0,
@@ -211,7 +211,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -20.2,
+      "x": -13,
       "y": 0
     },
     "_skewX": 0,
@@ -302,8 +302,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -8.8,
-      "y": -8.5
+      "x": -2,
+      "y": -9
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -393,8 +393,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 4.2,
-      "y": -8.5
+      "x": 11,
+      "y": -9
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -448,7 +448,8 @@
       "__id__": 1
     },
     "_enabled": true,
-    "runSpeed": 7
+    "runSpeed": 7,
+    "action": "jump"
   },
   {
     "__type__": "cc.PolygonCollider",
@@ -461,8 +462,8 @@
     "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": 6.7,
+      "y": -6.7
     },
     "points": [
       {

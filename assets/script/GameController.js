@@ -62,6 +62,7 @@ cc.Class({
         this.gameOverDisplay.enabled = true;
         this.playAgain.active = true;
         this.socket.isGameOver = true;
+        this.socket.socket.disconnect();
         if (this.highScore == null) {
           cc.sys.localStorage.setItem('HighScore', this.score);
         } else if (this.score > this.highScore) {
@@ -69,6 +70,7 @@ cc.Class({
         }
     },
     onLoad: function () {
+      this.isGameStarted = false;
       this.isGameOver = false;
       this.highScore = cc.sys.localStorage.getItem('HighScore');
       this.socket = this.getComponent('Socket');
@@ -81,23 +83,34 @@ cc.Class({
       for (var i =0; i<3;i++) {
         var newGround = cc.instantiate(this.ground);
         this.grounds.addChild(newGround);
-        newGround.setPosition(cc.p(-300 + (600*i), this.groundYPos));
+        newGround.setPosition(cc.p(-300 + (600*i) - 5, this.groundYPos));
         newGround.getComponent('Ground').game = this;
         this.listGround.push(newGround);
       }
       this.score = 0;
-      var controller = this;
-      var scoreInterval = setInterval(function () {
-        if (!controller.isGameOver) {
-          controller.score += 1;
-          controller.scoreDisplay.string = controller.score;
-        } else {
-          clearInterval(scoreInterval);
-        }
-      }, 100);
-      // setInterval(function () {
-      //   console.log(controller.listGround[0].x);
-      // }, 500);
+      this.setInputControl();
+    },
+
+    setInputControl: function () {
+          var self = this;
+          cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, function (event) {
+
+              switch (event.keyCode) {
+                  case cc.KEY.up:
+                      if (!self.isGameStarted) {
+                        // self.isGameStarted = true;
+                        var scoreInterval = setInterval(function () {
+                          if (!self.isGameOver) {
+                            self.score += 1;
+                            self.scoreDisplay.string = self.score;
+                          } else {
+                            clearInterval(scoreInterval);
+                          }
+                        }, 100);
+                      }
+                      break;
+              }
+          });
     },
     // LIFE-CYCLE CALLBACKS:
 
