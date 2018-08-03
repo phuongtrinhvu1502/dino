@@ -27,48 +27,14 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        labelName: {
-          default: null,
-          type: cc.Node,
-        },
-        startString: 'Enter your name...',
-    },
-
-    setText: function(data) {
-      // console.log(data);
-
-
-      if (data == '') {
-        this.label.string = this.startString;
-        this.labelName.color = cc.hexToColor('#7F7F7F');
-      } else {
-        this.label.string = data;
-        if (this.labelName.color.b != 255) {
-          this.labelName.color = cc.hexToColor('#4D4D4D');
-        }
-      }
-    },
-
-    startGetName: function() {
-      if (this.label.string == this.startString) {
-        this.label.string = '';
-      }
-    },
-
-    endGetName: function(data) {
-      if (this.label.string == '') {
-        this.label.string = this.startString;
-        this.labelName.color = cc.hexToColor('#7F7F7F');
-      }
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    onLoad: function () {
-      this.label = this.labelName.getComponent(cc.Label);
-    },
+    // onLoad () {},
 
     start: function () {
+      cc.view.setDesignResolutionSize(1200, 560, cc.ResolutionPolicy.EXACT_FIT);
     },
 
     // update (dt) {},

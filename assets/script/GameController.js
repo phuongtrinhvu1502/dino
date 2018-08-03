@@ -41,6 +41,14 @@ cc.Class({
         default: null,
         type: cc.Label
       },
+      buttonJump: {
+        default: null,
+        type: cc.Node,
+      },
+      buttonDuck: {
+        default: null,
+        type: cc.Node,
+      },
     },
 
     CreateNewGround: function() {
@@ -68,6 +76,10 @@ cc.Class({
         } else if (this.score > this.highScore) {
           cc.sys.localStorage.setItem('HighScore', this.score);
         }
+        for (i = 0; i < 5; i++) {
+          var scoreComp = this.socket.leaderBoardScore[i].getComponent('Score');
+          scoreComp.isStartUpdate = false;
+        }
     },
     onLoad: function () {
       this.isGameStarted = false;
@@ -89,6 +101,12 @@ cc.Class({
       }
       this.score = 0;
       this.setInputControl();
+      this.setButtonControl();
+      // console.log(cc.sys.os);
+      if (cc.sys.os == 'Windows') {
+        this.buttonDuck.active = false;
+        this.buttonJump.active = false;
+      }
     },
 
     setInputControl: function () {
@@ -98,19 +116,48 @@ cc.Class({
               switch (event.keyCode) {
                   case cc.KEY.up:
                       if (!self.isGameStarted) {
-                        // self.isGameStarted = true;
-                        var scoreInterval = setInterval(function () {
-                          if (!self.isGameOver) {
-                            self.score += 1;
-                            self.scoreDisplay.string = self.score;
-                          } else {
-                            clearInterval(scoreInterval);
-                          }
-                        }, 100);
+
+                        if (self.socket.enemyData != '') {
+                          console.log("Create interval");
+                          var scoreInterval = setInterval(function () {
+                            if (!self.isGameOver) {
+                              self.score += 1;
+                              self.scoreDisplay.string = self.score;
+                            } else {
+                              clearInterval(scoreInterval);
+                            }
+                          }, 100);
+                          self.socket.sendDataStartMove();
+                          self.socket.sendDataGetLeaderBoard();
+                          self.isGameStarted = true;
+                        }
                       }
                       break;
               }
           });
+    },
+
+    setButtonControl: function() {
+      var self = this;
+      this.buttonJump.on(cc.Node.EventType.TOUCH_START, function(event){
+        if (!self.isGameStarted) {
+
+          if (self.socket.enemyData != '') {
+            console.log("Create interval");
+            var scoreInterval = setInterval(function () {
+              if (!self.isGameOver) {
+                self.score += 1;
+                self.scoreDisplay.string = self.score;
+              } else {
+                clearInterval(scoreInterval);
+              }
+            }, 100);
+            self.socket.sendDataStartMove();
+            self.socket.sendDataGetLeaderBoard();
+            self.isGameStarted = true;
+          }
+        }
+      });
     },
     // LIFE-CYCLE CALLBACKS:
 
@@ -122,6 +169,10 @@ cc.Class({
       } else {
         this.highScoreDisplay.string = 'HI  ' + this.highScore;
       }
+      // cc.view.resizeWithBrowserSize(true);
+      // cc.view.setDesignResolutionSize(2048, 1080, cc.ResolutionPolicy.EXACT_FIT);
+       // cc.view.enableAutoFullScreen(true);
+       cc.view.setDesignResolutionSize(1200, 560, cc.ResolutionPolicy.EXACT_FIT);
     },
 
     update: function (dt) {

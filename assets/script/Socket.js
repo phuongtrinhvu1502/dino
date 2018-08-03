@@ -65,6 +65,22 @@ cc.Class({
         serverSocket: 'http://45.33.124.160:1339',
         gameSpeed: 7,
         maxGameSpeed: 12,
+        leaderBoardName: {
+          default: [],
+          type: cc.Node,
+        },
+        leaderBoardScore: {
+          default: [],
+          type: cc.Node,
+        },
+        buttonJump: {
+          default: null,
+          type: cc.Node,
+        },
+        buttonDuck: {
+          default: null,
+          type: cc.Node,
+        },
     },
 
     createEnemy : function(data, index, duration) {
@@ -76,7 +92,6 @@ cc.Class({
           var enemyIndex = enemy[0];
           var enemyDuration = parseInt(enemy[1]);
           enemyDuration = enemyDuration - (30 * (self.gameSpeed - 7));
-          console.log(enemyDuration);
           var newEnemy = cc.instantiate(self.enemies[enemyIndex]);
           self.parentEnemy.addChild(newEnemy);
           newEnemy.setPosition(cc.p(700, -33.5));
@@ -108,8 +123,11 @@ cc.Class({
     },
 
     sendDataStartMove: function() {
-      console.log("StartMove");
       this.socket.emit('startMove', '');
+    },
+    sendDataGetLeaderBoard: function() {
+      console.log('Get leaderBoard');
+      this.socket.emit('getLeaderBoard', '');
     },
 
     setInputControl: function () {
@@ -119,10 +137,6 @@ cc.Class({
               switch (event.keyCode) {
                   case cc.KEY.up:
                         if (!self.isHoldingButton && self.socket != null) {
-                          if (!self.gameController.isGameStarted) {
-                            self.sendDataStartMove();
-                            self.gameController.isGameStarted = true;
-                          }
                           self.sendDataJump();
                           self.isHoldingButton = true;
                         }
@@ -150,11 +164,38 @@ cc.Class({
                         self.isHoldingButton = false;
                         self.sendDataCancleDuck();
                       }
-
                       break;
               }
           });
         }
+    },
+
+    setButtonControl: function() {
+      var self = this;
+      this.buttonJump.on(cc.Node.EventType.TOUCH_START, function(event){
+       self.sendDataJump();
+       self.isHoldingButton = true;
+      });
+      this.buttonJump.on(cc.Node.EventType.TOUCH_END, function(event){
+        if (self.socket != null) {
+          self.isHoldingButton = false;
+          self.sendDataCancleJump();
+        }
+      });
+
+      this.buttonDuck.on(cc.Node.EventType.TOUCH_START, function(event){
+        if (!self.isHoldingButton && self.socket != null) {
+          self.sendDataDuck();
+          self.isHoldingButton = true;
+        }
+      });
+
+      this.buttonDuck.on(cc.Node.EventType.TOUCH_END, function(event){
+        if (self.socket != null) {
+          self.isHoldingButton = false;
+          self.sendDataCancleDuck();
+        }
+      });
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -163,7 +204,7 @@ cc.Class({
       this.increateSpeed = 300;
       this.isHoldingButton = false;
       this.gameController = this.getComponent('GameController');
-      this.abc123 = 'abc123';
+      this.name = cc.sys.localStorage.getItem('guest_name');
       this.isGameOver = this.gameController.isGameOver;
       var newSocket = require('socket.io-client')(this.serverSocket);
       var self = this;
@@ -172,7 +213,7 @@ cc.Class({
       // var enemies = this.enemies;
       // var parentEnemy = this.parentEnemy;
       var pro5 = new Object();
-      pro5.name = "abc123";
+      pro5.name = this.name;
       pro5.room = 'global';
       pro5.type = 'player';
       var result = JSON.stringify(pro5);
@@ -180,6 +221,7 @@ cc.Class({
       newSocket.on('registerComplete',function(data){
         // console.log(data);
         self.enemyData = data.split(';');
+        console.log(newSocket.id);
         // self.createEnemy(enemyData, 0);
       });
       newSocket.on('startMove', function(data){
@@ -190,6 +232,8 @@ cc.Class({
             self.node.addChild(newBot);
             newBot.setPosition(cc.p(-237, -56));
             newBot.getComponent('Bot').game = self.gameController;
+            // console.log("Bot name: " + newPlayer.name);
+            newBot.getComponent('Bot').botNameComp.string = newPlayer.name;
           }
         } else {
           if (!self.gameController.isGameStarted) {
@@ -201,31 +245,74 @@ cc.Class({
             self.node.addChild(newNetworkPlayer);
             newNetworkPlayer.setPosition(cc.p(-237, -56));
             newNetworkPlayer.getComponent('NetworkPlayer').game = self.gameController;
+            newNetworkPlayer.getComponent('NetworkPlayer').netWorkPlayerNameComp.string = newPlayer.name;
             newNetworkPlayer.name = newPlayer.id;
           }
         }
       });
        newSocket.on('jump', function(data){
          var child = self.node.getChildByName(data);
-         child.getComponent('NetworkPlayer').jump();
+         if (child != null) {
+           child.getComponent('NetworkPlayer').jump();
+         }
+
        });
        newSocket.on('cancleJump', function(data){
          var child = self.node.getChildByName(data);
-         child.getComponent('NetworkPlayer').cancleJump();
+         if (child != null) {
+           child.getComponent('NetworkPlayer').cancleJump();
+         }
+
        });
        newSocket.on('duck', function(data) {
          var child = self.node.getChildByName(data);
-         child.getComponent('NetworkPlayer').duck();
+         if (child != null) {
+           child.getComponent('NetworkPlayer').duck();
+         }
+
        });
        newSocket.on('cancleDuck', function(data){
          var child = self.node.getChildByName(data);
-         child.getComponent('NetworkPlayer').stand();
+         if (child != null) {
+           child.getComponent('NetworkPlayer').stand();
+         }
+
+       });
+       newSocket.on('getLeaderBoard', function(data){
+         var leaderBoard = JSON.parse(data);
+         for (i = 0; i < 5; i++) {
+           if (i < leaderBoard.length) {
+             var obj = leaderBoard[i];
+             if (obj.id == newSocket.id) {
+               self.leaderBoardName[i].color = cc.hexToColor('#E43131');
+               self.leaderBoardScore[i].color = cc.hexToColor('#E43131');
+             } else {
+               self.leaderBoardName[i].color = cc.hexToColor('#000000');
+               self.leaderBoardScore[i].color = cc.hexToColor('#000000');
+             }
+             self.leaderBoardName[i].getComponent(cc.Label).string = (i+1) + '. ' + obj.name;
+             var scoreComp = self.leaderBoardScore[i].getComponent('Score');
+             if (!scoreComp.isStartUpdate) {
+               scoreComp.score = obj.score;
+               scoreComp.updateScore();
+               scoreComp.isStartUpdate = true;
+             } else {
+               scoreComp.score = obj.score + 1;
+             }
+           } else {
+             self.leaderBoardName[i].getComponent(cc.Label).string = (i+1);
+             self.leaderBoardScore[i].getComponent(cc.Label).string = 0;
+             self.leaderBoardName[i].color = cc.hexToColor('#000000');
+             self.leaderBoardScore[i].color = cc.hexToColor('#000000');
+           }
+         }
        });
       this.socket = newSocket;
     },
 
     start: function () {
       this.setInputControl();
+      this.setButtonControl();
     },
 
     update: function (dt) {

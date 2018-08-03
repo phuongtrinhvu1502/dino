@@ -17,6 +17,10 @@ cc.Class({
       max: 0,
       groundPoint: 0,
       moveSpeed: 7,
+      botName:{
+        default : null,
+        type: cc.Node,
+      }
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -31,7 +35,7 @@ cc.Class({
       // current horizontal speed of main character
       this.xSpeed = 0;
       this.ySpeed = 0;
-
+      this.botNameComp = this.botName.getComponent(cc.Label);
       this.anim = this.getComponent(cc.Animation);
       this.runAnimState = this.anim.getAnimationState('dino');
       this.jumpAnimState = this.anim.getAnimationState('dino_jump');
@@ -65,7 +69,11 @@ cc.Class({
       }
     },
 
+
+
     start: function () {
+
+      // this.botNameComp.string = 'abcvsdw';
     },
 
     update: function (dt) {

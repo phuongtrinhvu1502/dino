@@ -16,10 +16,73 @@ cc.Class({
         fallingPoint: 0,
         max: 0,
         groundPoint: 0,
+        playerName: {
+          default: null,
+          type: cc.Node,
+        },
+        buttonJump: {
+          default: null,
+          type: cc.Node,
+        },
+        buttonDuck: {
+          default: null,
+          type: cc.Node,
+        },
     },
 
     jump: function() {
-      this.accTop = true;
+      console.log('Jump');
+    },
+
+    duck: function() {
+      console.log('duck');
+    },
+
+    setButtonControl: function () {
+      var self = this;
+      var anim1 = self.anim;
+      var runAnimState1 = self.anim.getAnimationState('dino');
+      var jumpAnimState1 = self.anim.getAnimationState('dino_jump');
+      var duckAnimState1 = self.anim.getAnimationState('dino_duck');
+      this.buttonJump.on(cc.Node.EventType.TOUCH_START, function(event){
+	     // click event
+       self.accTop = true;
+       if (!jumpAnimState1.isPlaying) {
+         if (anim1._clips != null) {
+           anim1.play("dino_jump");
+         }
+       }
+      });
+      this.buttonJump.on(cc.Node.EventType.TOUCH_END, function(event){
+      	// event when leave the finger touch
+        self.accTop = false;
+        self.isGrowing = false;
+      });
+
+      this.buttonDuck.on(cc.Node.EventType.TOUCH_START, function(event){
+        if (!duckAnimState1.isPlaying) {
+          if (anim1._clips != null) {
+            anim1.play("dino_duck");
+            // console.log(this.duckCollider);
+            if (!self.duckCollider.enabled) {
+              self.duckCollider.enabled = true;
+              self.standCollider.enabled = false;
+            }
+          }
+        }
+      });
+
+      this.buttonDuck.on(cc.Node.EventType.TOUCH_END, function(event){
+        if (!runAnimState1.isPlaying) {
+          if (anim1._clips != null) {
+            anim1.play("dino");
+            if (!self.standCollider.enabled) {
+              self.duckCollider.enabled = false;
+              self.standCollider.enabled = true;
+            }
+          }
+        }
+      });
     },
 
     setInputControl: function () {
@@ -39,9 +102,8 @@ cc.Class({
 
               switch (event.keyCode) {
                   case cc.KEY.w:
-                      // self.accTop = true;
-                      self.sendDataJump();
-                      self.jump();
+                      // self.accTop = true
+                      self.accTop = true;
                       if (!jumpAnimState1.isPlaying) {
                         if (anim1._clips != null) {
                           anim1.play("dino_jump");
@@ -110,6 +172,7 @@ cc.Class({
       this.xSpeed = 0;
       this.ySpeed = 0;
 
+      this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('guest_name');;
       this.anim = this.getComponent(cc.Animation);
       this.runAnimState = this.anim.getAnimationState('dino');
       this.jumpAnimState = this.anim.getAnimationState('dino_jump');
@@ -128,6 +191,7 @@ cc.Class({
       // Enabled draw collider
       manager.enabledDebugDraw = false;
       this.setInputControl();
+      this.setButtonControl();
     },
 
     onCollisionEnter: function (other, self) {

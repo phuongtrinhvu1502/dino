@@ -28,9 +28,9 @@
     "orientation": "portrait"
   },
   "renderMode": "1",
-  "startScene": "bad41d32-a71c-4bb3-9ee6-191dad1c8111",
+  "startScene": "ab53e8d2-416b-428c-89c0-d00a4121643d",
   "title": "Dino",
-  "webOrientation": "auto",
+  "webOrientation": "landscape",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "",
     "appid": "wx6ac3f5090a6b99c5",

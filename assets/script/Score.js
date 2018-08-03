@@ -26,50 +26,31 @@ cc.Class({
         //     set (value) {
         //         this._bar = value;
         //     }
-        // },
-        labelName: {
-          default: null,
-          type: cc.Node,
-        },
-        startString: 'Enter your name...',
+        // },,
+        score: 0,
     },
 
-    setText: function(data) {
-      // console.log(data);
-
-
-      if (data == '') {
-        this.label.string = this.startString;
-        this.labelName.color = cc.hexToColor('#7F7F7F');
-      } else {
-        this.label.string = data;
-        if (this.labelName.color.b != 255) {
-          this.labelName.color = cc.hexToColor('#4D4D4D');
+    updateScore: function() {
+      var self = this;
+      setTimeout(function () {
+        self.label.string = self.score;
+        self.score+= 1;
+        if (self.isStartUpdate) {
+          self.updateScore();
         }
-      }
-    },
-
-    startGetName: function() {
-      if (this.label.string == this.startString) {
-        this.label.string = '';
-      }
-    },
-
-    endGetName: function(data) {
-      if (this.label.string == '') {
-        this.label.string = this.startString;
-        this.labelName.color = cc.hexToColor('#7F7F7F');
-      }
+      }, 100);
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
-      this.label = this.labelName.getComponent(cc.Label);
+      this.label = this.node.getComponent(cc.Label);
+      this.isStartUpdate = false;
     },
 
-    start: function () {
-    },
+    // start () {
+    //
+    // },
 
     // update (dt) {},
 });

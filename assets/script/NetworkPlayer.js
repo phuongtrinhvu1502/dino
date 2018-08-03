@@ -17,6 +17,10 @@ cc.Class({
       max: 0,
       groundPoint: 0,
       moveSpeed: 7,
+      netWorkPlayerName:{
+        default : null,
+        type: cc.Node,
+      }
     },
 
     jump: function() {
@@ -63,7 +67,7 @@ cc.Class({
       // current horizontal speed of main character
       this.xSpeed = 0;
       this.ySpeed = 0;
-
+      this.netWorkPlayerNameComp = this.netWorkPlayerName.getComponent(cc.Label);
       this.anim = this.getComponent(cc.Animation);
       this.runAnimState = this.anim.getAnimationState('dino');
       this.jumpAnimState = this.anim.getAnimationState('dino_jump');
