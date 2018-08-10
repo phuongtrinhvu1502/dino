@@ -35,6 +35,34 @@ cc.Class({
           default: null,
           type: cc.Node,
         },
+        email: {
+          default: null,
+          type: cc.EditBox,
+        },
+        password: {
+          default: null,
+          type: cc.EditBox,
+        },
+        loginForm: {
+          default: null,
+          type: cc.Node,
+        },
+        registerForm: {
+          default: null,
+          type: cc.Node,
+        },
+        error: {
+          default: null,
+          type: cc.Label,
+        },
+        gameMenu: {
+          default: null,
+          type: cc.Node,
+        },
+        loginPage: {
+          default: null,
+          type: cc.Node,
+        }
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -48,7 +76,7 @@ cc.Class({
         this.facebook();
         this.twitter();
       }
-
+      // this.twitter();
     },
 
     TestCode: function() {
@@ -118,7 +146,7 @@ cc.Class({
                 cc.sys.localStorage.setItem('avatar', result.url);
             }
           };
-          xhr.open("POST", "http://45.33.124.160/Dino/saveUser.php");
+          xhr.open("POST", "http://45.33.124.160/Dino/saveUserFb.php");
           xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
           xhr.send(JSON.stringify(response));
            self.logged.active = true;
@@ -159,7 +187,6 @@ cc.Class({
 
               loggedComp.avatar.spriteFrame.setTexture(data);
             }, this);
-            console.log(result.highScore);
             loggedComp.playerName.string = result.additionalUserInfo.profile.name;
             cc.sys.localStorage.setItem('isLogin', true);
             cc.sys.localStorage.setItem('loginMethod', 'twitter');
@@ -180,14 +207,143 @@ cc.Class({
      });
    },
 
+   loginGoogle: function () {
+     var self = this;
+     var provider = new this.firebase.auth.GoogleAuthProvider();
+     provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+     provider.setCustomParameters({
+       'lang': 'en'
+     });
+     this.firebase.auth().signInWithPopup(provider).then(function(result) {
+       var user = new Object();
+       user.email = result.additionalUserInfo.profile.email;
+       user.id = result.additionalUserInfo.profile.id;
+       user.name = result.additionalUserInfo.profile.name;
+       user.url = result.additionalUserInfo.profile.picture;
+       var xhr = new XMLHttpRequest();
+       xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && (xhr.status >= 200 && xhr.status < 400)) {
+            var result1 = JSON.parse(xhr.responseText);
+            console.log(result1);
+            cc.textureCache.addImageAsync(result1.url, function(data){
+
+              loggedComp.avatar.spriteFrame.setTexture(data);
+            }, this);
+            loggedComp.playerName.string = result.additionalUserInfo.profile.name;
+            cc.sys.localStorage.setItem('isLogin', true);
+            cc.sys.localStorage.setItem('loginMethod', 'google');
+            cc.sys.localStorage.setItem('name', result.additionalUserInfo.profile.name);
+            cc.sys.localStorage.setItem('HighScore', result1.highScore);
+            cc.sys.localStorage.setItem('avatar', result1.url);
+        }
+      };
+      xhr.open("POST", "http://45.33.124.160/Dino/saveUserGg.php");
+
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      var loggedComp = self.logged.getComponent('Logged');
+      xhr.send(JSON.stringify(user));
+      self.logged.active = true;
+      self.notLogged.active = false;
+
+     }).catch(function(error) {
+       console.log(error);
+     });
+   },
+
+   loginEmail: function() {
+     console.log('Email: ' + this.email.string);
+     console.log('Password: ' + this.password.string);
+   },
+
    logout: function() {
     var self = this;
     cc.sys.localStorage.setItem('isLogin', false);
     self.logged.active = false;
     self.notLogged.active = true;
 
-   }
+  },
 
+  login: function() {
+    if (this.email.string == '') {
+      this.error.node.active = true;
+      this.error.string = 'Please enter user name!';
+    } else if (this.password.string == '') {
+      this.error.node.active = true;
+      this.error.string = 'Please enter password!';
+    } else {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+       if (xhr.readyState == 4 && (xhr.status >= 200 && xhr.status < 400)) {
+           var result1 = JSON.parse(xhr.responseText);
+           console.log(result1);
+           if (result1.success) {
+             cc.sys.localStorage.setItem('isLogin', true);
+             cc.sys.localStorage.setItem('loginMethod', 'name');
+             cc.sys.localStorage.setItem('name', result1.name);
+             // cc.sys.localStorage.setItem('HighScore', result1.highScore);
+             cc.sys.localStorage.setItem('avatar', result1.url);
+           } else {
+             console.log('Fail: ' + result1.msg);
+           }
+       }
+     };
+     xhr.open("POST", "http://45.33.124.160/Dino/login.php");
+     var user = new Object();
+     user.user_name = this.email.string;
+     user.pw = this.password.string;
+     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+     xhr.send(JSON.stringify(user));
+   }
+  },
+
+  register: function() {
+    if (this.email.string == '') {
+      this.error.node.active = true;
+      this.error.string = 'Please enter user name!';
+    } else if (this.password.string == '') {
+      this.error.node.active = true;
+      this.error.string = 'Please enter password!';
+    } else {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+       if (xhr.readyState == 4 && (xhr.status >= 200 && xhr.status < 400)) {
+           var result1 = JSON.parse(xhr.responseText);
+           console.log(result1);
+           if (result1.success) {
+             cc.sys.localStorage.setItem('isLogin', true);
+             cc.sys.localStorage.setItem('loginMethod', 'name');
+             cc.sys.localStorage.setItem('name', result1.name);
+             cc.sys.localStorage.setItem('HighScore', result1.highScore);
+             cc.sys.localStorage.setItem('avatar', result1.url);
+           } else {
+             console.log('Fail: ' + result1.msg);
+           }
+       }
+     };
+     xhr.open("POST", "http://45.33.124.160/Dino/saveUserName.php");
+     var user = new Object();
+     user.user_name = this.email.string;
+     user.pw = this.password.string;
+     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+     xhr.send(JSON.stringify(user));
+    }
+  },
+  showRegForm: function() {
+    this.registerForm.active = true;
+    this.loginForm.active = false;
+  },
+  showLoginForm: function() {
+    this.registerForm.active = false;
+    this.loginForm.active = true;
+  },
+  showLoginPage: function() {
+    this.loginPage.active = true;
+    this.gameMenu.active = false;
+  },
+  showGameMenu: function() {
+    this.loginPage.active = false;
+    this.gameMenu.active = true;
+  }
 
     // start () {
     //

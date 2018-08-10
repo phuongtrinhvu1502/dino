@@ -32,6 +32,10 @@ cc.Class({
           type: cc.Node,
         },
         startString: 'Enter your name...',
+        editBox: {
+          default: null,
+          type: cc.EditBox,
+        }
     },
 
     setText: function(data) {
@@ -42,9 +46,17 @@ cc.Class({
         this.label.string = this.startString;
         this.labelName.color = cc.hexToColor('#7F7F7F');
       } else {
-        this.label.string = data;
+        if (this.editBox.inputFlag == 0) {
+          var input = '';
+          for (i = 0; i < data.length; i++) {
+            input += "*";
+          }
+          this.label.string = input;
+        } else {
+          this.label.string = data;
+        }
         if (this.labelName.color.b != 255) {
-          this.labelName.color = cc.hexToColor('#4D4D4D');
+          this.labelName.color = cc.hexToColor('#000000');
         }
       }
     },

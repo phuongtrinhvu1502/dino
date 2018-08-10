@@ -1,0 +1,30 @@
+{
+  "ver": "1.0.0",
+  "uuid": "03175fc6-fdbe-4f38-abd8-79d83ca49aa1",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "subMetas": {
+    "flogo_rgb_hex-brc-site-250": {
+      "ver": "1.0.3",
+      "uuid": "cba3e807-a3d3-41a5-ab0c-486a37d7f733",
+      "rawTextureUuid": "03175fc6-fdbe-4f38-abd8-79d83ca49aa1",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 0,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 250,
+      "height": 250,
+      "rawWidth": 250,
+      "rawHeight": 250,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
