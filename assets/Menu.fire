@@ -2176,8 +2176,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 144,
-      "height": 12
+      "width": 201.8,
+      "height": 7.5
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -2185,7 +2185,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 9.3,
+      "x": 38.3,
       "y": 2.9
     },
     "_skewX": 0,
@@ -2207,13 +2207,13 @@
     "_actualFontSize": 12,
     "_fontSize": 12,
     "_lineHeight": 20,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_N$file": {
       "__uuid__": "02dd7ebf-320b-470f-bb22-e9a80982b088"
     },
     "_isSystemFontUsed": false,
     "_spacingX": 0,
-    "_N$string": "Highest score:",
+    "_N$string": "Highest score:  ",
     "_N$horizontalAlign": 0,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",
@@ -2406,7 +2406,9 @@
     "_N$hoverSprite": null,
     "hoverSprite": null,
     "_N$disabledSprite": null,
-    "_N$target": null
+    "_N$target": {
+      "__id__": 57
+    }
   },
   {
     "__type__": "cc.ClickEvent",
@@ -2472,7 +2474,7 @@
       }
     ],
     "_tag": -1,
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 69
@@ -2745,7 +2747,7 @@
     },
     "_enabled": true,
     "_useOriginalSize": false,
-    "_url": "http://conquersky.io/funcUser/leader-board.php",
+    "_url": "http://45.33.124.160/Dino/funcUser/leader-board.php?startrow=0",
     "webviewEvents": []
   },
   {
