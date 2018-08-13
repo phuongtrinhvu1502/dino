@@ -81,6 +81,10 @@ cc.Class({
           default: null,
           type: cc.Node,
         },
+        spawn: {
+          default: null,
+          type: cc.Node,
+        },
     },
 
     createEnemy : function(data, index, duration) {
@@ -201,6 +205,7 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
+      this.spawn.getComponent('Spawn').game = this.getComponent('GameController');
       this.increateSpeed = 300;
       this.isHoldingButton = false;
       this.gameController = this.getComponent('GameController');
@@ -230,7 +235,7 @@ cc.Class({
           if (!self.gameController.isGameStarted) {
             var newBot = cc.instantiate(self.bot);
             self.node.addChild(newBot);
-            newBot.setPosition(cc.p(-237, -56));
+            newBot.setPosition(cc.p(self.spawn.x, -56));
             newBot.getComponent('Bot').game = self.gameController;
             // console.log("Bot name: " + newPlayer.name);
             newBot.getComponent('Bot').botNameComp.string = newPlayer.name;

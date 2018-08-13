@@ -171,8 +171,13 @@ cc.Class({
       // current horizontal speed of main character
       this.xSpeed = 0;
       this.ySpeed = 0;
+      var isLogin = cc.sys.localStorage.getItem('isLogin');
+      if (isLogin == 'true') {
+        this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('name');
+      } else {
+        this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('guest_name');
+      }
 
-      this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('guest_name');;
       this.anim = this.getComponent(cc.Animation);
       this.runAnimState = this.anim.getAnimationState('dino');
       this.jumpAnimState = this.anim.getAnimationState('dino_jump');

@@ -100,7 +100,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "tag": 6,
+    "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -148,8 +148,7 @@
     },
     "_enabled": true,
     "runSpeed": 7,
-    "action": "jump",
-    "actionDistance": 100
+    "action": "jump"
   },
   {
     "__type__": "cc.PrefabInfo",

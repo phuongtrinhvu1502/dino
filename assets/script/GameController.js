@@ -70,18 +70,49 @@ cc.Class({
         this.gameOverDisplay.enabled = true;
         this.playAgain.active = true;
         this.socket.isGameOver = true;
-        this.socket.socket.disconnect();
+        // this.socket.socket.disconnect();
         if (this.highScore == null) {
           cc.sys.localStorage.setItem('HighScore', this.score);
         } else if (this.score > this.highScore) {
           cc.sys.localStorage.setItem('HighScore', this.score);
         }
-        for (i = 0; i < 5; i++) {
-          var scoreComp = this.socket.leaderBoardScore[i].getComponent('Score');
-          scoreComp.isStartUpdate = false;
+        // for (i = 0; i < 5; i++) {
+        //   var scoreComp = this.socket.leaderBoardScore[i].getComponent('Score');
+        //   scoreComp.isStartUpdate = false;
+        // }
+        if (!this.isSendLeaderBoard) {
+          this.isSendLeaderBoard = true;
+          this.saveScore();
         }
     },
+    saveScore: function() {
+      var isLogin = cc.sys.localStorage.getItem('isLogin');
+      if (isLogin == 'true') {
+        var obj = new Object();
+        var loginMethod = cc.sys.localStorage.getItem('loginMethod');
+        if (loginMethod == 'facebook') {
+          obj.type = 'fb_id';
+        } else if (loginMethod == 'twitter') {
+          obj.type = 'tw_id';
+        } else if (loginMethod == 'google') {
+          obj.type = 'gg_id';
+        } else if (loginMethod == 'name') {
+          obj.type = 'user_name';
+        }
+        obj.id = cc.sys.localStorage.getItem('id');
+        obj.name = cc.sys.localStorage.getItem('name');
+        obj.score = this.score;
+        obj.avatar = cc.sys.localStorage.getItem('avatar');
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://45.33.124.160/Dino/saveScore.php");
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(JSON.stringify(obj));
+        console.log(JSON.stringify(obj));
+
+      }
+    },
     onLoad: function () {
+      this.isSendLeaderBoard = false;
       this.isGameStarted = false;
       this.isGameOver = false;
       this.highScore = cc.sys.localStorage.getItem('HighScore');

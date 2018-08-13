@@ -27,26 +27,20 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        socket: {
-          default: null,
-          type: cc.Node,
-        },
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    callback: function () {
-        //here the customEventData parameter is equal to you set before the "foobar"
-          this.socket.getComponent('Socket').socket.disconnect();
-          cc.director.loadScene("game", function() {
-            console.log("Loaded");
-          });
-
-    }
+    // onLoad () {},
 
     // start () {
     //
     // },
 
-    // update (dt) {},
+    update: function (dt) {
+      if (this.game.isGameStarted) {
+        this.node.x -= this.runSpeed;
+      }
+
+    },
 });

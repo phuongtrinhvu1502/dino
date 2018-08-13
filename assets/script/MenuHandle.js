@@ -63,6 +63,10 @@ cc.Class({
           default: null,
           type: cc.Node,
         },
+        leaderBoardPage: {
+          default: null,
+          type: cc.Node,
+        },
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -77,9 +81,16 @@ cc.Class({
         this.twitter();
       }
       if (this.isLogin == 'true') {
-        var loggedComp = self.logged.getComponent('Logged');
+        var loggedComp = this.logged.getComponent('Logged');
         loggedComp.playerName.string = cc.sys.localStorage.getItem('name');
         loggedComp.highScore.string = 'Highest score: ' + cc.sys.localStorage.getItem('HighScore');
+        var avatarUrl = cc.sys.localStorage.getItem('avatar');
+        cc.textureCache.addImageAsync(avatarUrl, function(data){
+          loggedComp.avatar.spriteFrame.setTexture(data);
+        }, this);
+        
+        this.logged.active = true;
+        this.notLogged.active = false;
       }
       // this.twitter();
     },
@@ -145,6 +156,7 @@ cc.Class({
                 cc.sys.localStorage.setItem('name', response.name);
                 cc.sys.localStorage.setItem('HighScore', result.highScore);
                 cc.sys.localStorage.setItem('avatar', result.url);
+                cc.sys.localStorage.setItem('id', response.id);
                 self.showGameMenu();
             }
           };
@@ -190,6 +202,7 @@ cc.Class({
             cc.sys.localStorage.setItem('name', result.additionalUserInfo.profile.name);
             cc.sys.localStorage.setItem('HighScore', result1.highScore);
             cc.sys.localStorage.setItem('avatar', result1.url);
+            cc.sys.localStorage.setItem('id', user.id);
             self.showGameMenu();
         }
       };
@@ -233,6 +246,7 @@ cc.Class({
             cc.sys.localStorage.setItem('name', result.additionalUserInfo.profile.name);
             cc.sys.localStorage.setItem('HighScore', result1.highScore);
             cc.sys.localStorage.setItem('avatar', result1.url);
+            cc.sys.localStorage.setItem('id', user.id);
             self.showGameMenu();
         }
       };
@@ -266,6 +280,9 @@ cc.Class({
       this.error.string = 'Please enter password!';
     } else {
       var self = this;
+      var user = new Object();
+      user.user_name = this.email.string;
+      user.pw = this.password.string;
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function () {
        if (xhr.readyState == 4 && (xhr.status >= 200 && xhr.status < 400)) {
@@ -276,6 +293,7 @@ cc.Class({
              cc.sys.localStorage.setItem('name', result1.user_name);
              cc.sys.localStorage.setItem('HighScore', result1.highScore);
              cc.sys.localStorage.setItem('avatar', result1.url);
+             cc.sys.localStorage.setItem('id', user.user_name);
              loggedComp.playerName.string = result1.user_name;
              loggedComp.highScore.string = 'Highest score: ' + result1.highScore;
              self.showGameMenu();
@@ -289,9 +307,6 @@ cc.Class({
      };
      xhr.open("POST", "http://45.33.124.160/Dino/login.php");
      var loggedComp = self.logged.getComponent('Logged');
-     var user = new Object();
-     user.user_name = this.email.string;
-     user.pw = this.password.string;
      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
      xhr.send(JSON.stringify(user));
    }
@@ -306,6 +321,9 @@ cc.Class({
       this.error.string = 'Please enter password!';
     } else {
       var self = this;
+      var user = new Object();
+      user.user_name = this.email.string;
+      user.pw = this.password.string;
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function () {
        if (xhr.readyState == 4 && (xhr.status >= 200 && xhr.status < 400)) {
@@ -316,6 +334,7 @@ cc.Class({
              cc.sys.localStorage.setItem('name', result1.name);
              cc.sys.localStorage.setItem('HighScore', result1.highScore);
              cc.sys.localStorage.setItem('avatar', result1.url);
+             cc.sys.localStorage.setItem('id', user.user_name);
              loggedComp.playerName.string = result1.user_name;
              loggedComp.highScore.string = 'Highest score: ' + result1.highScore;
              self.showGameMenu();
@@ -329,9 +348,6 @@ cc.Class({
      };
      xhr.open("POST", "http://45.33.124.160/Dino/saveUserName.php");
      var loggedComp = self.logged.getComponent('Logged');
-     var user = new Object();
-     user.user_name = this.email.string;
-     user.pw = this.password.string;
      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
      xhr.send(JSON.stringify(user));
     }
@@ -351,7 +367,13 @@ cc.Class({
   showGameMenu: function() {
     this.loginPage.active = false;
     this.gameMenu.active = true;
-  }
+  },
+  showLeaderBoard: function() {
+    this.leaderBoardPage.active = true;
+  },
+  closeLeaderBoard: function() {
+    this.leaderBoardPage.active = false;
+  },
 
     // start () {
     //

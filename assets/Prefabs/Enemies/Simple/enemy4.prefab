@@ -148,8 +148,7 @@
     },
     "_enabled": true,
     "runSpeed": 7,
-    "action": "jump",
-    "actionDistance": 100
+    "action": "jump"
   },
   {
     "__type__": "cc.PrefabInfo",
