@@ -84,7 +84,7 @@ cc.Class({
         if (this.isBotDead) {
           this.node.x -= this.moveSpeed;
           if (this.node.x <= -1500) {
-            this.node.destroy();
+            // this.node.destroy();
           }
           return;
         }

@@ -27,6 +27,7 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
+        runSpeed: 7,
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -38,7 +39,7 @@ cc.Class({
     // },
 
     update: function (dt) {
-      if (this.game.isGameStarted) {
+      if (this.game.isGameStarted && !this.game.isGameOver) {
         this.node.x -= this.runSpeed;
       }
 

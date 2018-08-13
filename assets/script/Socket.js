@@ -133,6 +133,9 @@ cc.Class({
       console.log('Get leaderBoard');
       this.socket.emit('getLeaderBoard', '');
     },
+    sendDataDead: function() {
+      this.socket.emit('dead', '');
+    },
 
     setInputControl: function () {
       var self = this;
@@ -226,22 +229,19 @@ cc.Class({
       newSocket.on('registerComplete',function(data){
         // console.log(data);
         self.enemyData = data.split(';');
-        console.log(newSocket.id);
         // self.createEnemy(enemyData, 0);
       });
       newSocket.on('startMove', function(data){
         var newPlayer = JSON.parse(data);
         if (newPlayer.type == 'bot') {
-          if (!self.gameController.isGameStarted) {
             var newBot = cc.instantiate(self.bot);
             self.node.addChild(newBot);
             newBot.setPosition(cc.p(self.spawn.x, -56));
             newBot.getComponent('Bot').game = self.gameController;
-            // console.log("Bot name: " + newPlayer.name);
+            console.log("Bot : " + data);
             newBot.getComponent('Bot').botNameComp.string = newPlayer.name;
-          }
+            newBot.name = newPlayer.id;
         } else {
-          if (!self.gameController.isGameStarted) {
             // var newBot = cc.instantiate(self.bot);
             // self.node.addChild(newBot);
             // newBot.setPosition(cc.p(-237, -56));
@@ -252,7 +252,6 @@ cc.Class({
             newNetworkPlayer.getComponent('NetworkPlayer').game = self.gameController;
             newNetworkPlayer.getComponent('NetworkPlayer').netWorkPlayerNameComp.string = newPlayer.name;
             newNetworkPlayer.name = newPlayer.id;
-          }
         }
       });
        newSocket.on('jump', function(data){
@@ -310,6 +309,13 @@ cc.Class({
              self.leaderBoardName[i].color = cc.hexToColor('#000000');
              self.leaderBoardScore[i].color = cc.hexToColor('#000000');
            }
+         }
+       });
+       newSocket.on('dead', function(data){
+         var deadInfo = JSON.parse(data);
+         var child = self.node.getChildByName(deadInfo.id);
+         if (child != null) {
+           child.destroy();
          }
        });
       this.socket = newSocket;

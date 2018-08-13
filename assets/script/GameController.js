@@ -71,6 +71,7 @@ cc.Class({
         this.playAgain.active = true;
         this.socket.isGameOver = true;
         // this.socket.socket.disconnect();
+        this.socket.sendDataDead();
         if (this.highScore == null) {
           cc.sys.localStorage.setItem('HighScore', this.score);
         } else if (this.score > this.highScore) {

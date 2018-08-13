@@ -84,19 +84,22 @@
       },
       {
         "__id__": 41
+      },
+      {
+        "__id__": 55
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 55
-      },
-      {
-        "__id__": 56
-      },
-      {
         "__id__": 57
+      },
+      {
+        "__id__": 58
+      },
+      {
+        "__id__": 59
       }
     ],
     "_prefab": null,
@@ -1915,7 +1918,10 @@
     "node": {
       "__id__": 47
     },
-    "_enabled": true
+    "_enabled": true,
+    "socket": {
+      "__id__": 2
+    }
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2001,6 +2007,68 @@
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Nineteen Ninety Seven",
     "_N$overflow": 0
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "Spawn",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 2
+    },
+    "_children": [],
+    "_tag": -1,
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 56
+      }
+    ],
+    "_prefab": null,
+    "_id": "8fweB8J81K1b5alWMGbKtQ",
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 255
+    },
+    "_cascadeOpacityEnabled": true,
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.46810207336523035,
+      "y": 2.5686868686868687
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 76,
+      "height": 75
+    },
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_scaleX": 1,
+    "_scaleY": 1,
+    "_position": {
+      "__type__": "cc.Vec2",
+      "x": -256,
+      "y": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_localZOrder": 0,
+    "_globalZOrder": 0,
+    "_opacityModifyRGB": false,
+    "groupIndex": 0
+  },
+  {
+    "__type__": "eea1cnZlfxBH6dU5kvFnIG+",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 55
+    },
+    "_enabled": true,
+    "runSpeed": 7
   },
   {
     "__type__": "cc.Canvas",
@@ -2149,6 +2217,9 @@
     },
     "buttonDuck": {
       "__id__": 41
+    },
+    "spawn": {
+      "__id__": 55
     }
   }
 ]
