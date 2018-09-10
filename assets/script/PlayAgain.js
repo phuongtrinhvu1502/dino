@@ -42,7 +42,18 @@ cc.Class({
             console.log("Loaded");
           });
 
-    }
+    },
+
+    onLoad: function() {
+      var self = this;
+      // window.parent.document.getElementById("sco-game").contentWindow.again = function() {
+      //   console.log('Cocos Again');
+      //   self.callback();
+      // }
+      window.again = function() {
+        self.callback();
+      }
+    },
 
     // start () {
     //

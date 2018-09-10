@@ -3,7 +3,9 @@
   "appSecret": "",
   "encryptJs": true,
   "excludeScenes": [
-    "9422b402-6816-443d-85db-b185ab8f42bf"
+    "9422b402-6816-443d-85db-b185ab8f42bf",
+    "2837389e-d6e3-4f95-8924-cd99959a6158",
+    "ab53e8d2-416b-428c-89c0-d00a4121643d"
   ],
   "fb-instant-games": {},
   "includeAnySDK": false,
@@ -27,10 +29,10 @@
     "REMOTE_SERVER_ROOT": "",
     "orientation": "portrait"
   },
-  "renderMode": "1",
-  "startScene": "ab53e8d2-416b-428c-89c0-d00a4121643d",
+  "renderMode": "2",
+  "startScene": "ce01ef57-6886-443c-9a8a-82579161ffe7",
   "title": "Dino",
-  "webOrientation": "landscape",
+  "webOrientation": "auto",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "",
     "appid": "wx6ac3f5090a6b99c5",

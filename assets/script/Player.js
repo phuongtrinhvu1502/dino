@@ -28,6 +28,10 @@ cc.Class({
           default: null,
           type: cc.Node,
         },
+        socket: {
+          default: null,
+          type: cc.Node,
+        }
     },
 
     jump: function() {
@@ -160,6 +164,26 @@ cc.Class({
         }
     },
 
+    getNameFromCookie: function(name) {
+      // var cookieName = document.cookie;
+      // var name = "";
+      // if (cookieName == ""){
+      //   name = "";
+      // }else{
+      //   var params = cookieName.split(";");
+      //
+      //   for (var i=0; i<params.length; i++) {
+      //     var param = params[i].split("=");
+      //     if(param[0].trim() == "userInfo_name"){ name = param[1]; break;}
+      //     else if(param[0].trim() == "userInfo_name_guest"){ name = param[1]; }
+      //   }
+      //   name = decodeURIComponent(name).replace(/\+/g, ' ');
+      //   console.log("CookieName: [" + name + "]");
+        this.playerName.getComponent(cc.Label).string = name;
+        this.socket.getComponent('Socket').createSocket(name);
+      // }
+    },
+
     // LIFE-CYCLE CALLBACKS:
     onLoad: function () {
       this.isDead = false;
@@ -171,12 +195,15 @@ cc.Class({
       // current horizontal speed of main character
       this.xSpeed = 0;
       this.ySpeed = 0;
-      var isLogin = cc.sys.localStorage.getItem('isLogin');
-      if (isLogin == 'true') {
-        this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('name');
-      } else {
-        this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('guest_name');
-      }
+      var self = this;
+      var name = cc.sys.localStorage.getItem('playerName');
+      self.getNameFromCookie(name);
+      // var isLogin = cc.sys.localStorage.getItem('isLogin');
+      // if (isLogin == 'true') {
+      //   this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('name');
+      // } else {
+      //   this.playerName.getComponent(cc.Label).string = cc.sys.localStorage.getItem('guest_name');
+      // }
 
       this.anim = this.getComponent(cc.Animation);
       this.runAnimState = this.anim.getAnimationState('dino');

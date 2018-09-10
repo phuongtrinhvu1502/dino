@@ -60,11 +60,15 @@ cc.Class({
 
       if (other.tag == 0 && other.node.group == 'Enemy') {
         // console.log("You lose");
-        this.moveSpeed = other.getComponent('Enemy').runSpeed;
-        if (!this.deadAnimState.isPlaying) {
-          this.isDead = true;
-          this.anim.play('dino_dead');
-          this.isBotDead = true;
+        try {
+          this.moveSpeed = other.getComponent('Enemy').runSpeed;
+          if (!this.deadAnimState.isPlaying) {
+            this.isDead = true;
+            this.anim.play('dino_dead');
+            this.isBotDead = true;
+          }
+        } catch(err){
+
         }
       }
     },

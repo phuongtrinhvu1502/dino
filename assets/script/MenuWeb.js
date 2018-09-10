@@ -27,29 +27,41 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        nameLabel: {
-          default: null,
-          type: cc.Node,
-        },
-    },
-
-    onClick: function() {
-      // console.log(this.nameComp.string);
-      // if (this.nameComp.string == '') {
-      //   cc.sys.localStorage.setItem('guest_name', 'Guest');
-      // } else {
-      //   cc.sys.localStorage.setItem('guest_name', this.nameComp.string);
-      // }
-      cc.director.loadScene("game", function() {
-
-      });
     },
 
     // LIFE-CYCLE CALLBACKS:
+    GetRoom: function(){
+        var roomid_value = "global";
+		    var level_value = "";
+        var queryString = window.location.search.substring(1);
+        var params = queryString.split("&");
+
+        for (var i=0; i<params.length; i++) {
+            var param = params[i].split("=");
+            if(param[0] == "roomid"){ roomid_value = param[1]; }
+        }
+        console.log("Room: " + roomid_value);
+        // var buffer = _malloc(lengthBytesUTF8(roomid_value) + 1);
+        cc.sys.localStorage.setItem('roomId', roomid_value);
+        return roomid_value;
+    },
 
     onLoad: function () {
+      this.roomid = this.GetRoom();
+      if (this.roomid == "global") {
+        window.parent.loadGamePopup();
+      } else {
+        cc.director.loadScene("game", function() {
 
-      this.nameComp = this.nameLabel.getComponent(cc.EditBox);
+        });
+      }
+      window.parent.playFunction = function(name) {
+        console.log('Get name: ' + name);
+        cc.sys.localStorage.setItem('playerName', name);
+        cc.director.loadScene("game", function() {
+
+        });
+      }
     },
 
     // start () {

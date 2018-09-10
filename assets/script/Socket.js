@@ -62,7 +62,7 @@ cc.Class({
           type: cc.Prefab,
           tooltip: "Network Player",
         },
-        serverSocket: 'http://45.33.124.160:1339',
+        serverSocket: 'http://dinosaurgame.io:1339',
         gameSpeed: 7,
         maxGameSpeed: 12,
         leaderBoardName: {
@@ -82,6 +82,14 @@ cc.Class({
           type: cc.Node,
         },
         spawn: {
+          default: null,
+          type: cc.Node,
+        },
+        numberOnline: {
+          default: null,
+          type: cc.Label,
+        },
+        progress: {
           default: null,
           type: cc.Node,
         },
@@ -130,11 +138,12 @@ cc.Class({
       this.socket.emit('startMove', '');
     },
     sendDataGetLeaderBoard: function() {
-      console.log('Get leaderBoard');
       this.socket.emit('getLeaderBoard', '');
     },
     sendDataDead: function() {
       this.socket.emit('dead', '');
+      var scoreComp = this.leaderBoardScore[5].getComponent('Score');
+      scoreComp.isStartUpdate = false;
     },
 
     setInputControl: function () {
@@ -212,22 +221,30 @@ cc.Class({
       this.increateSpeed = 300;
       this.isHoldingButton = false;
       this.gameController = this.getComponent('GameController');
-      this.name = cc.sys.localStorage.getItem('guest_name');
       this.isGameOver = this.gameController.isGameOver;
+      // var enemies = this.enemies;
+      // var parentEnemy = this.parentEnemy;
+    },
+
+
+
+    createSocket: function(name) {
+      this.playerName = name;
+      var roomId = cc.sys.localStorage.getItem('roomId');
       var newSocket = require('socket.io-client')(this.serverSocket);
       var self = this;
       this.isCreatedEnemy = false;
       this.enemyData = '';
-      // var enemies = this.enemies;
-      // var parentEnemy = this.parentEnemy;
+      this.playerOnline = '';
       var pro5 = new Object();
-      pro5.name = this.name;
-      pro5.room = 'global';
+      pro5.name = name;
+      pro5.room = roomId;
       pro5.type = 'player';
       var result = JSON.stringify(pro5);
       newSocket.emit('register', result);
       newSocket.on('registerComplete',function(data){
         // console.log(data);
+        self.progress.active = false;
         self.enemyData = data.split(';');
         // self.createEnemy(enemyData, 0);
       });
@@ -238,7 +255,6 @@ cc.Class({
             self.node.addChild(newBot);
             newBot.setPosition(cc.p(self.spawn.x, -56));
             newBot.getComponent('Bot').game = self.gameController;
-            console.log("Bot : " + data);
             newBot.getComponent('Bot').botNameComp.string = newPlayer.name;
             newBot.name = newPlayer.id;
         } else {
@@ -253,6 +269,8 @@ cc.Class({
             newNetworkPlayer.getComponent('NetworkPlayer').netWorkPlayerNameComp.string = newPlayer.name;
             newNetworkPlayer.name = newPlayer.id;
         }
+        self.playerOnline++;
+        self.numberOnline.string = 'Online: ' + self.playerOnline;
       });
        newSocket.on('jump', function(data){
          var child = self.node.getChildByName(data);
@@ -283,6 +301,7 @@ cc.Class({
 
        });
        newSocket.on('getLeaderBoard', function(data){
+         var isTop5 = false;
          var leaderBoard = JSON.parse(data);
          for (i = 0; i < 5; i++) {
            if (i < leaderBoard.length) {
@@ -290,6 +309,9 @@ cc.Class({
              if (obj.id == newSocket.id) {
                self.leaderBoardName[i].color = cc.hexToColor('#E43131');
                self.leaderBoardScore[i].color = cc.hexToColor('#E43131');
+               self.leaderBoardName[5].active = false;
+               self.leaderBoardScore[5].active = false;
+               isTop5 = true;
              } else {
                self.leaderBoardName[i].color = cc.hexToColor('#000000');
                self.leaderBoardScore[i].color = cc.hexToColor('#000000');
@@ -310,6 +332,25 @@ cc.Class({
              self.leaderBoardScore[i].color = cc.hexToColor('#000000');
            }
          }
+         if (!isTop5 && !self.gameController.isGameOver) {
+           for (i = 5; i < leaderBoard.length; i++) {
+             var obj = leaderBoard[i];
+             if (obj.id == newSocket.id) {
+               self.leaderBoardName[5].getComponent(cc.Label).string = (i+1) + '. ' + obj.name;
+
+               var scoreComp = self.leaderBoardScore[5].getComponent('Score');
+               if (!scoreComp.isStartUpdate) {
+                 scoreComp.score = obj.score;
+                 scoreComp.updateScore();
+                 scoreComp.isStartUpdate = true;
+               } else {
+                 scoreComp.score = obj.score + 1;
+               }
+               break;
+             }
+           }
+         }
+
        });
        newSocket.on('dead', function(data){
          var deadInfo = JSON.parse(data);
@@ -317,6 +358,14 @@ cc.Class({
          if (child != null) {
            child.destroy();
          }
+       });
+       newSocket.on('playerOnline', function(data){
+        self.playerOnline = data - 1;
+        self.numberOnline.string = 'Online: ' + self.playerOnline;
+       });
+       newSocket.on('playerQuit', function(data){
+         self.playerOnline--;
+         self.numberOnline.string = 'Online: ' + self.playerOnline;
        });
       this.socket = newSocket;
     },

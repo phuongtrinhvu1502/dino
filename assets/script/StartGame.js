@@ -9,6 +9,7 @@
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 
 cc.Class({
+
     extends: cc.Component,
 
     properties: {
@@ -27,34 +28,34 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        nameLabel: {
-          default: null,
-          type: cc.Node,
-        },
-    },
-
-    onClick: function() {
-      // console.log(this.nameComp.string);
-      // if (this.nameComp.string == '') {
-      //   cc.sys.localStorage.setItem('guest_name', 'Guest');
-      // } else {
-      //   cc.sys.localStorage.setItem('guest_name', this.nameComp.string);
-      // }
-      cc.director.loadScene("game", function() {
-
-      });
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
+      this.isLoaded = false;
+      window.parent.loadGamePopup();
+      window.playFunction = function() {
+        alert('From Coscos');
+      }
+    },
 
-      this.nameComp = this.nameLabel.getComponent(cc.EditBox);
+    startGame: function() {
+
     },
 
     // start () {
     //
     // },
 
-    // update (dt) {},
+    update: function (dt) {
+      if (window.parent.isPlayed == true) {
+        if (!this.isLoaded) {
+          cc.director.loadScene("game", function() {
+            console.log("Play game");
+          });
+        }
+        this.isLoaded = true;
+      }
+    },
 });

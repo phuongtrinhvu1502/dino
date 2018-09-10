@@ -64,55 +64,68 @@ cc.Class({
         // console.log(this.countGround);
     },
     GameOver: function() {
-        console.log("Game over");
         this.isGameOver = true;
         this.playerScript.accel = 0;
-        this.gameOverDisplay.enabled = true;
-        this.playAgain.active = true;
+        // this.gameOverDisplay.enabled = true;
+        // this.playAgain.active = true;
         this.socket.isGameOver = true;
         // this.socket.socket.disconnect();
         this.socket.sendDataDead();
-        if (this.highScore == null) {
-          cc.sys.localStorage.setItem('HighScore', this.score);
-        } else if (this.score > this.highScore) {
-          cc.sys.localStorage.setItem('HighScore', this.score);
-        }
         // for (i = 0; i < 5; i++) {
         //   var scoreComp = this.socket.leaderBoardScore[i].getComponent('Score');
         //   scoreComp.isStartUpdate = false;
         // }
         if (!this.isSendLeaderBoard) {
           this.isSendLeaderBoard = true;
-          this.saveScore();
+          // this.saveScore();
+          this.checkLogin();
         }
+        console.log(dieTime);
+        window.loadIframeAds(this.score);
+        var dieTime = cc.sys.localStorage.getItem('noDead');
+        if (dieTime == null || dieTime == 'undefined') {
+          dieTime = 1;
+        } else {
+          dieTime++;
+          if (dieTime == 5) {
+            dieTime = 1;
+            window.reloadDie5times();
+          }
+        }
+        cc.sys.localStorage.setItem('noDead', dieTime);
     },
-    saveScore: function() {
-      var isLogin = cc.sys.localStorage.getItem('isLogin');
-      if (isLogin == 'true') {
-        var obj = new Object();
-        var loginMethod = cc.sys.localStorage.getItem('loginMethod');
-        if (loginMethod == 'facebook') {
-          obj.type = 'fb_id';
-        } else if (loginMethod == 'twitter') {
-          obj.type = 'tw_id';
-        } else if (loginMethod == 'google') {
-          obj.type = 'gg_id';
-        } else if (loginMethod == 'name') {
-          obj.type = 'user_name';
-        }
-        obj.id = cc.sys.localStorage.getItem('id');
-        obj.name = cc.sys.localStorage.getItem('name');
-        obj.score = this.score;
-        obj.avatar = cc.sys.localStorage.getItem('avatar');
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://45.33.124.160/Dino/saveScore.php");
-        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        xhr.send(JSON.stringify(obj));
-        console.log(JSON.stringify(obj));
+    checkLogin: function() {
+      var cookieName = document.cookie;
+      if (cookieName == ""){
+        this.isLogin = false;
+      }else{
+        var params = cookieName.split(";");
 
+        for (var i=0; i<params.length; i++) {
+          var param = params[i].split("=");
+          if(param[0].trim() == "userInfo_name")
+          {
+            this.isLogin = true;
+            this.saveScore();
+            break;
+          }
+          else if(param[0].trim() == "userInfo_name_guest"){
+            this.isLogin = false;
+          }
+        }
       }
     },
+    saveScore: function() {
+      var name = this.player.getComponent('Player').playerName.getComponent(cc.Label).string;
+      var param = 'userName=' + name + '&score=' + this.score;
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://dinosaurgame.io/funcUser/saveScore.php?" + param, true);
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xhr.send(null);
+    },
     onLoad: function () {
+
+      this.isLogin = false;
       this.isSendLeaderBoard = false;
       this.isGameStarted = false;
       this.isGameOver = false;
@@ -150,7 +163,6 @@ cc.Class({
                       if (!self.isGameStarted) {
 
                         if (self.socket.enemyData != '') {
-                          console.log("Create interval");
                           var scoreInterval = setInterval(function () {
                             if (!self.isGameOver) {
                               self.score += 1;
