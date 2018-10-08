@@ -90,7 +90,6 @@ cc.Class({
     },
 
     setInputControl: function () {
-        if (!this.game.isGameOver) {
           var self = this;
           var anim1 = self.anim;
           var runAnimState1 = self.anim.getAnimationState('dino');
@@ -123,6 +122,7 @@ cc.Class({
                         }
                       break;
                   case cc.KEY.down:
+                  // if (!self.game.isGameOver) {
                       if (!duckAnimState1.isPlaying) {
                         if (anim1._clips != null) {
                           anim1.play("dino_duck");
@@ -133,6 +133,7 @@ cc.Class({
                           }
                         }
                       }
+                    // }
                       break;
               }
           });
@@ -149,6 +150,7 @@ cc.Class({
                       self.isGrowing = false;
                       break;
                   case cc.KEY.down:
+                  // if (!self.game.isGameOver) {
                       if (!runAnimState1.isPlaying) {
                         if (anim1._clips != null) {
                           anim1.play("dino");
@@ -158,10 +160,15 @@ cc.Class({
                           }
                         }
                       }
+                    // }
                       break;
+                  // case cc.KEY.space:
+                  // cc.director.loadScene("game", function() {
+                  //   console.log("Loaded");
+                  // });
+                  //   break;
               }
           });
-        }
     },
 
     getNameFromCookie: function(name) {
@@ -229,7 +236,7 @@ cc.Class({
     onCollisionEnter: function (other, self) {
       // console.log('on collision enter: ' + other.node.group);
 
-      if (other.tag == 0) {
+      if (other.tag == 0 && !this.game.isGameOver) {
         // console.log("You lose");
         this.game.GameOver();
         if (!this.deadAnimState.isPlaying) {

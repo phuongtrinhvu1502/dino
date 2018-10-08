@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
+var Helpers = require('Helpers')
 cc.Class({
     extends: cc.Component,
 
@@ -86,7 +86,7 @@ cc.Class({
         return;
       }
         if (this.isBotDead) {
-          this.node.x -= this.moveSpeed;
+          this.node.x -= Helpers.runSpeed * Helpers.gameSpeed * dt;
           if (this.node.x <= -1500) {
             // this.node.destroy();
           }
@@ -117,7 +117,7 @@ cc.Class({
           this.isFalling = true;
         }
         if (this.game.isGameOver || !this.game.isGameStarted) {
-        this.node.x += this.moveSpeed;
+        this.node.x += Helpers.runSpeed * Helpers.gameSpeed * dt;
           if (this.node.x >= 900) {
             this.node.destroy();
           }

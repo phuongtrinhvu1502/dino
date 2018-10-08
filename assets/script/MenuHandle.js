@@ -88,7 +88,7 @@ cc.Class({
         cc.textureCache.addImageAsync(avatarUrl, function(data){
           loggedComp.avatar.spriteFrame.setTexture(data);
         }, this);
-        
+
         this.logged.active = true;
         this.notLogged.active = false;
       }
@@ -226,6 +226,7 @@ cc.Class({
        'lang': 'en'
      });
      this.firebase.auth().signInWithPopup(provider).then(function(result) {
+       console.log(result);
        var user = new Object();
        user.email = result.additionalUserInfo.profile.email;
        user.id = result.additionalUserInfo.profile.id;

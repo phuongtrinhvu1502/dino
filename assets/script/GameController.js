@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
+var Helpers = require('Helpers')
 cc.Class({
     extends: cc.Component,
 
@@ -55,7 +55,7 @@ cc.Class({
         // generate a new node in the scene with a preset template
         var newGround = cc.instantiate(this.ground);
         this.grounds.addChild(newGround);
-        newGround.setPosition(cc.p(900, this.groundYPos));
+        newGround.setPosition(cc.p(1300, this.groundYPos));
         newGround.getComponent('Ground').game = this;
         this.lowestGround++;
         this.listGround[0] = this.listGround[1];
@@ -64,6 +64,7 @@ cc.Class({
         // console.log(this.countGround);
     },
     GameOver: function() {
+      console.log("Game Over");
         this.isGameOver = true;
         this.playerScript.accel = 0;
         // this.gameOverDisplay.enabled = true;
@@ -80,19 +81,22 @@ cc.Class({
           // this.saveScore();
           this.checkLogin();
         }
-        console.log(dieTime);
         window.loadIframeAds(this.score);
-        var dieTime = cc.sys.localStorage.getItem('noDead');
+        // var dieTime = cc.sys.localStorage.getItem('noDead');
+        var dieTime = Helpers.noDead;
         if (dieTime == null || dieTime == 'undefined') {
           dieTime = 1;
         } else {
-          dieTime++;
+
           if (dieTime == 5) {
             dieTime = 1;
             window.reloadDie5times();
+          } else {
+            dieTime++;
           }
         }
-        cc.sys.localStorage.setItem('noDead', dieTime);
+        // cc.sys.localStorage.setItem('noDead', dieTime);
+        Helpers.noDead = dieTime;
     },
     checkLogin: function() {
       var cookieName = document.cookie;
@@ -119,12 +123,13 @@ cc.Class({
       var name = this.player.getComponent('Player').playerName.getComponent(cc.Label).string;
       var param = 'userName=' + name + '&score=' + this.score;
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", "http://dinosaurgame.io/funcUser/saveScore.php?" + param, true);
+      xhr.open("GET", "https://dinosaurgame.io/funcUser/saveScore.php?" + param, true);
       xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       xhr.send(null);
     },
     onLoad: function () {
-
+      console.log(Helpers.version);
+      Helpers.runSpeed = 7;
       this.isLogin = false;
       this.isSendLeaderBoard = false;
       this.isGameStarted = false;
@@ -152,6 +157,12 @@ cc.Class({
         this.buttonDuck.active = false;
         this.buttonJump.active = false;
       }
+      // window.speed = function(speed) {
+      //     Helpers.gameSpeed = speed;
+      // }
+      // window.distance = function(distance) {
+      //     Helpers.enemyDistance = distance;
+      // }
     },
 
     setInputControl: function () {

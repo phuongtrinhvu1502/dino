@@ -20,6 +20,7 @@
 //     this.ViewFunc = null;
 //     this.Flag = false;
 // };
+var Helpers = require('Helpers')
 cc.Class({
     extends: cc.Component,
 
@@ -62,7 +63,7 @@ cc.Class({
           type: cc.Prefab,
           tooltip: "Network Player",
         },
-        serverSocket: 'http://dinosaurgame.io:1339',
+        serverSocket: 'https://dinosaurgame.io:1339',
         gameSpeed: 7,
         maxGameSpeed: 12,
         leaderBoardName: {
@@ -103,12 +104,12 @@ cc.Class({
           var enemy = data[index].split(',');
           var enemyIndex = enemy[0];
           var enemyDuration = parseInt(enemy[1]);
-          enemyDuration = enemyDuration - (30 * (self.gameSpeed - 7));
+          enemyDuration = enemyDuration - (Helpers.enemyDistance * self.gameSpeed);
           var newEnemy = cc.instantiate(self.enemies[enemyIndex]);
           self.parentEnemy.addChild(newEnemy);
           newEnemy.setPosition(cc.p(700, -33.5));
           newEnemy.getComponent('Enemy').game = self;
-          newEnemy.getComponent('Enemy').runSpeed = self.gameSpeed;
+          // newEnemy.getComponent('Enemy').runSpeed = self.gameSpeed;
           index++;
           if (index == data.length){
             index = 0;
@@ -218,7 +219,7 @@ cc.Class({
 
     onLoad: function () {
       this.spawn.getComponent('Spawn').game = this.getComponent('GameController');
-      this.increateSpeed = 300;
+      this.increateSpeed = 30;
       this.isHoldingButton = false;
       this.gameController = this.getComponent('GameController');
       this.isGameOver = this.gameController.isGameOver;
@@ -264,7 +265,7 @@ cc.Class({
             // newBot.getComponent('Bot').game = self.gameController;
             var newNetworkPlayer = cc.instantiate(self.networkPlayer);
             self.node.addChild(newNetworkPlayer);
-            newNetworkPlayer.setPosition(cc.p(-237, -56));
+            newNetworkPlayer.setPosition(cc.p(self.spawn.x, -56));
             newNetworkPlayer.getComponent('NetworkPlayer').game = self.gameController;
             newNetworkPlayer.getComponent('NetworkPlayer').netWorkPlayerNameComp.string = newPlayer.name;
             newNetworkPlayer.name = newPlayer.id;
@@ -326,6 +327,8 @@ cc.Class({
                scoreComp.score = obj.score + 1;
              }
            } else {
+             var scoreComp = self.leaderBoardScore[i].getComponent('Score');
+             scoreComp.isStartUpdate = false;
              self.leaderBoardName[i].getComponent(cc.Label).string = (i+1);
              self.leaderBoardScore[i].getComponent(cc.Label).string = 0;
              self.leaderBoardName[i].color = cc.hexToColor('#000000');
@@ -377,10 +380,10 @@ cc.Class({
 
     update: function (dt) {
       // console.log(this.gameController.score);
-      if (this.gameController.score >= this.increateSpeed && this.gameSpeed <= this.maxGameSpeed) {
+      if (this.gameController.score >= this.increateSpeed && Helpers.runSpeed <= this.maxGameSpeed) {
         console.log('Increate Speed');
-        this.gameSpeed++;
-        this.increateSpeed += 300;
+        Helpers.runSpeed += 0.1;
+        this.increateSpeed += 30;
       }
       if (!this.gameController.isGameStarted) {
         return;

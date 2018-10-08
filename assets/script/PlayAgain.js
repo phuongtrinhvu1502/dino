@@ -44,6 +44,14 @@ cc.Class({
 
     },
 
+    menuCallBack: function() {
+      this.socket.getComponent('Socket').socket.disconnect();
+      
+      cc.director.loadScene("MenuWeb", function() {
+
+      });
+    },
+
     onLoad: function() {
       var self = this;
       // window.parent.document.getElementById("sco-game").contentWindow.again = function() {
@@ -52,6 +60,9 @@ cc.Class({
       // }
       window.again = function() {
         self.callback();
+      }
+      window.backToMenu = function() {
+          self.menuCallBack();
       }
     },
 

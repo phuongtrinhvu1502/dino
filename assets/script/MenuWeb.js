@@ -33,14 +33,13 @@ cc.Class({
     GetRoom: function(){
         var roomid_value = "global";
 		    var level_value = "";
-        var queryString = window.location.search.substring(1);
+        var queryString = window.parent.location.search.substring(1);
         var params = queryString.split("&");
 
         for (var i=0; i<params.length; i++) {
             var param = params[i].split("=");
             if(param[0] == "roomid"){ roomid_value = param[1]; }
         }
-        console.log("Room: " + roomid_value);
         // var buffer = _malloc(lengthBytesUTF8(roomid_value) + 1);
         cc.sys.localStorage.setItem('roomId', roomid_value);
         return roomid_value;
@@ -48,15 +47,17 @@ cc.Class({
 
     onLoad: function () {
       this.roomid = this.GetRoom();
+      window.parent.loadGamePopup();
       if (this.roomid == "global") {
-        window.parent.loadGamePopup();
-      } else {
-        cc.director.loadScene("game", function() {
 
-        });
+      } else {
+        // cc.director.loadScene("game", function() {
+        //
+        // });
+        // window.parent.loadGamePopup();
+        window.parent.disabledPWF();
       }
       window.parent.playFunction = function(name) {
-        console.log('Get name: ' + name);
         cc.sys.localStorage.setItem('playerName', name);
         cc.director.loadScene("game", function() {
 

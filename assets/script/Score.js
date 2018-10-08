@@ -33,11 +33,15 @@ cc.Class({
     updateScore: function() {
       var self = this;
       setTimeout(function () {
-        self.label.string = self.score;
-        self.score+= 1;
+
         if (self.isStartUpdate) {
-          self.updateScore();
+          self.label.string = self.score;
+          self.score+= 1;
+        } else {
+          self.score = 0;
+          self.label.string = self.score;
         }
+        self.updateScore();
       }, 100);
     },
 

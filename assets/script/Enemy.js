@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
+var Helpers = require('Helpers')
 cc.Class({
     extends: cc.Component,
 
@@ -102,7 +102,7 @@ cc.Class({
         // update speed of each frame according to the current acceleration direction
         // this.player.getComponent('Player').accTop = true;
         if (!this.game.isGameOver) {
-          this.node.x -= this.runSpeed;
+          this.node.x -= Helpers.runSpeed * Helpers.gameSpeed * dt;
           if (this.node.x <= -1500) {
             this.node.destroy();
           }

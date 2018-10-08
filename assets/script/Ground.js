@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
+var Helpers = require('Helpers')
 cc.Class({
     extends: cc.Component,
 
@@ -33,12 +33,12 @@ cc.Class({
         this.runSpeed = 0;
         return;
       }
-      this.runSpeed = 5;
-        this.node.x -= this.runSpeed;
+      this.runSpeed = 7;
+        this.node.x -= Helpers.runSpeed * Helpers.gameSpeed * dt;
         if (this.node.x <= -900) {
           this.node.destroy();
         }
-        if (this.node.x <= -900 && !this.isCreateSelf) {
+        if (this.node.x <= -500 && !this.isCreateSelf) {
           this.game.CreateNewGround();
           this.isCreateSelf = true;
         }
