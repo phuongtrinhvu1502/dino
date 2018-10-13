@@ -121,11 +121,14 @@ cc.Class({
     },
     saveScore: function() {
       var name = this.player.getComponent('Player').playerName.getComponent(cc.Label).string;
-      var param = 'userName=' + name + '&score=' + this.score;
+      // var param = 'userName=' + name + '&score=' + this.score;
+      var playerObject = new Object();
+      playerObject.userName = name;
+      playerObject.score = this.score;
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", "https://dinosaurgame.io/funcUser/saveScore.php?" + param, true);
+      xhr.open("POST", "https://dinosaurgame.io/funcUser/saveScore.php", true);
       xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      xhr.send(null);
+      xhr.send(JSON.stringify(playerObject));
     },
     onLoad: function () {
       console.log(Helpers.version);

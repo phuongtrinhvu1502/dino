@@ -46,10 +46,11 @@ cc.Class({
 
     menuCallBack: function() {
       this.socket.getComponent('Socket').socket.disconnect();
-      
-      cc.director.loadScene("MenuWeb", function() {
 
+      cc.director.loadScene("MenuWeb", function() {
+        window.parent.reloadScore();
       });
+
     },
 
     onLoad: function() {
